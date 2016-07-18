@@ -1,4 +1,63 @@
 "use strict";
+var fs = require('fs');
+var path = require('path');
+
+exports.mkdirSync = function (url, mode, callback) {
+  var paths = url.split("/");
+  if (typeof mode === "function") {
+    callback = mode;
+    mode = '0755';
+  }
+  mode = mode || '0755';
+  if (paths[0] === ".") {
+    paths.shift();
+  }
+  if (paths[0] === "..") {
+    paths.splice(0, 2, paths[0] + "/" + paths[1]);
+  }
+  function mkdir(cur) {
+    console.log(cur);
+    if (!fs.existsSync(cur)) {
+      fs.mkdirSync(cur, mode);
+    }
+    if (paths.length) {
+      mkdir(cur + "/" + paths.shift());
+    } else {
+      callback();
+    }
+  }
+  paths.length && mkdir(paths.shift());
+};
+
+exports.rmdirSync = (function () {
+  function iterator(url, dirs) {
+    var stat = fs.statSync(url);
+    if (stat.isDirectory()) {
+      dirs.unshift(url);
+      rmdir(url, dirs);
+    } else if (stat.isFile()) {
+      fs.unlinkSync(url);
+    }
+  }
+  function rmdir(path, dirs) {
+    var arr = fs.readdirSync(path);
+    for (var i = 0, el ; el = arr[i++];) {
+      iterator(path + "/" + el, dirs);
+    }
+  }
+  return function (dir, callback) {
+    var dirs = [];
+    try {
+      iterator(dir, dirs);
+      for (var i = 0, el ; el = dirs[i++];) {
+        fs.rmdirSync(el);
+      }
+      callback();
+    } catch (err) {
+      err.code ==- "ENOENT" ? callback() : cb(err);
+    }
+  };
+})();
 
 /**
  *
@@ -44,40 +103,4 @@ exports.convertFileToDataURLviaFileReader = function convertFileToDataURLviaFile
   };
   xhr.open("GET", url);
   xhr.send();
-}
-
-/**
- * 压缩图片
- *
- * @param  {[type]} options 图片操作选项
- *         url : 图片地址
- *         outputFormat : 输出图片格式
- *         callback : 回调
- *         scale : 缩放比例
- * @return {[type]}         [description]
- */
-exports.scaleImgToDataURLviaCanvas = function scaleImgToDataURLviaCanvas(options) {
-  var img = new Image();
-  img.crossOrigin = "Anonymous";
-  img.onload = function() {
-    options = Object.assign({
-      url: '',
-      outputFormat: 'image/png',
-      callback: function() {},
-      scale: 1
-    }, options);
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    var dataURL;
-    var scale = options.scale;
-    var width = img.width * scale;
-    var height = img.height * scale;
-    canvas.width = width;
-    canvas.height = height;
-    ctx.drawImage(img, 0, 0, width, height);
-    dataURL = canvas.toDataURL(options.outputFormat);
-    typeof options.callback == 'function' && options.callback(dataURL);
-    canvas = null;
-  };
-  img.src = options.url;
 }

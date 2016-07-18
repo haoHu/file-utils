@@ -1,7 +1,20 @@
 var utils = require('../index');
 var expect = require('chai').expect;
+var fs = require("fs");
 
 describe('utils: 工具方法convertImgToDataURLviaCanvas测试', function () {
+    // mkdirSync方法测试
+    it('mkdir ../test/foo', function () {
+        utils.mkdirSync('../test/foo', '0755', function () {
+            expect(fs.existsSync('../test/foo')).to.be.ok;
+        })
+    });
+    // rmdirSync方法测试
+    it('rm -r ../test/foo', function () {
+        utils.rmdirSync('../test/foo', function () {
+            expect(fs.existsSync('../test/foo')).to.not.be.ok;
+        });
+    });
     // convertImgToDataURLviaCanvas方法测试
     it('backward.png', function () {
         utils.convertImgToDataURLviaCanvas('./images/backward.png', function (dataURL) {

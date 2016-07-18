@@ -1,0 +1,22 @@
+{
+  "name": "blue-file-utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haoHu/file-utils.git"
+  },
+  "author": "bluefish",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/haoHu/file-utils/issues"
+  },
+  "homepage": "https://github.com/haoHu/file-utils#readme",
+  "devDependencies": {
+    "chai": "^3.5.0"
+  }
+}

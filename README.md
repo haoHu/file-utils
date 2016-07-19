@@ -1,6 +1,6 @@
 文件操作使用方法库
 ===
-[![GitHub version](https://github.com/haoHu/file-utils/releases/tag/v0.0.1)](https://github.com/haoHu/file-utils/releases/tag/v0.0.1)
+[![npm version](https://badge.fury.io/js/blue-file-utils.svg)](https://badge.fury.io/js/blue-file-utils)
 # 单元测试
 
 ```
